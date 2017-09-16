@@ -1,6 +1,6 @@
-## Writeup Template
+## Advanced Lane Finding
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-**Advanced Lane Finding Project**
 
 The goals / steps of this project are the following:
 
@@ -55,18 +55,22 @@ I used a combination of saturation and gradient thresholds to generate a binary 
 The code for my perspective transform includes a function called `perspec_trans()`, which appears in the 5th code cell of the IPython notebook.  The `pespec_trans()` function takes as inputs an image (`img`).  I chose the hardcode the source and destination points in the following manner:
 
 ```
-src = np.float32([[480, 480], [800, 480], [1250, 720], [0, 720]])
-dst = np.float32([[0, 0], [1250, 0], [1250, 720], [0, 720]])
+corners = np.float32([[250,720],[600,457],[720,457],[1145,720]])
+new_top_left=np.array([corners[0,0],0])
+new_top_right=np.array([corners[3,0],0])
+offset=[150,0]
+src = np.float32([corners[0],corners[1],corners[2],corners[3]])
+dst = np.float32([corners[0]+offset,new_top_left+offset,new_top_right-offset ,corners[3]-offset])
 ```
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 480, 480      | 0, 0        | 
-| 800, 480      | 1250, 0      |
-| 1250, 720     | 1250, 720      |
-| 0, 720      | 0, 720        |
+| 250, 720      | 400, 720        | 
+| 600, 457      | 150, 0      |
+| 720, 457     | 995, 0      |
+| 1145, 720      | 995, 720        |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear nearly parallel in the warped image.
 
@@ -94,7 +98,8 @@ I implemented this step in the 9th cell (105-118 lines) of my notebook.  Here is
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./result.mp4)
+Here's a [link to my video result](./result.mp4) <br>
+Or [my Youtube Link](https://youtu.be/iS-plq0Q2Zg)
 
 ---
 
@@ -111,3 +116,5 @@ For each image frame of thee video:
 
 Problems:
 The image processing is not thorough enough, since I found out that when the car is in some darken area, or there are some irrelevant black lanes on the road, the combined binary image can also include those lanes, and our interested yellow lanes will be blur due to the dark. This can lead to bad polyfit (I noticed in challenge video). I think the dark area can not be avoid. To improve it, I can either use some other color channels to block those black lanes, or increasing the color contrast to augment image brightness. In my project, I just ignore the bad fit.
+
+
